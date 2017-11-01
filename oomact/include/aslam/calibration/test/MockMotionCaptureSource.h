@@ -28,6 +28,7 @@ class MockMotionCaptureSource : public MotionCaptureSource {
 extern MockMotionCaptureSource MmcsStraightLine;
 extern MockMotionCaptureSource MmcsRotatingStraightLine;
 extern MockMotionCaptureSource MmcsCircle;
+extern MockMotionCaptureSource MmcsEight;
 
 } /* namespace test */
 } /* namespace calibration */

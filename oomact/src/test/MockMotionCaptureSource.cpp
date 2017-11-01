@@ -46,6 +46,24 @@ MockMotionCaptureSource MmcsCircle([](Timestamp now, MotionCaptureSource::PoseSt
   p.p = Eigen::Vector3d::UnitX() * cos(angleRad) + Eigen::Vector3d::UnitY() * sin(angleRad);
 });
 
+MockMotionCaptureSource MmcsEight([](Timestamp now, MotionCaptureSource::PoseStamped & p){
+  const double deltaTime = now - MockMotionCaptureSource::StartTime;
+  double angleRad = deltaTime;
+
+  double xOffset;
+  const int phase = int(floor(angleRad / M_PI)) % 4;
+
+  if (phase == 1 || phase == 2) {  // left circle
+    xOffset = -2;
+    angleRad = - (angleRad - M_PI);
+  } else { // right circle
+    xOffset = 0;
+  }
+
+  p.q = sm::kinematics::axisAngle2quat({0, 0, -(angleRad + M_PI / 2)}); // to passive quaternion yielding a positive rotation
+  p.p = Eigen::Vector3d::UnitX() * (cos(angleRad) + xOffset) + Eigen::Vector3d::UnitY() * sin(angleRad);
+});
+
 } /* namespace test */
 } /* namespace calibration */
 } /* namespace aslam */
