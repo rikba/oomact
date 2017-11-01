@@ -45,7 +45,7 @@ WheelOdometry::WheelOdometry(Model& model, const std::string& name, sm::value_st
       LOG(INFO) << "Calibrating wheel odometry!";
     if(!L->isToBeEstimated())
       LOG(INFO) << "Not estimating wheel distance L!";
-    if(getDelayVariable().isToBeEstimated())
+    if(hasDelay() && getDelayVariable().isToBeEstimated())
       LOG(INFO) << "Estimating wheelDelay!";
 
     LOG(INFO) << "Assuming a wheel delay of " << double(getDelay()) << " in [" <<
@@ -84,6 +84,8 @@ void WheelOdometry::addMeasurement(CalibratorI & calib, const Timestamp t, const
 
 void WheelOdometry::addMeasurementErrorTerms(CalibratorI & calib, const CalibrationConfI & /*ec*/, ErrorTermReceiver & problem, bool observeOnly) const {
   LOG(INFO) << "Adding " << 2 * measurements_.size() << " wheels error terms";
+
+  CHECK(hasDelay()) << "Estimating without delay is not supported, yet"; // TODO AA support wheel odometry without delay estimation
 
   Timestamp minTime = Timestamp::Numerator(std::numeric_limits<Timestamp::Integer>::max()), maxTime = InvalidTimestamp();
 
@@ -168,10 +170,10 @@ void WheelOdometry::addMeasurementErrorTerms(CalibratorI & calib, const Calibrat
     }*/
     {
       auto R_m_r = getTransformationExpressionTo(robot, groundFrame_).toRotationExpression();
-      auto v_m_mr = robot.getVelocity(groundFrame_, getParentFrame());
+      auto v_m_mr = robot.getVelocity(getFrame(), groundFrame_);
       auto v_r_mr = R_m_r.inverse() * v_m_mr;
 
-      auto w_m_mr = robot.getAngularVelocity(groundFrame_, getParentFrame());
+      auto w_m_mr = robot.getAngularVelocity(getFrame(), groundFrame_);
       auto w_r_mr = R_m_r.inverse() * w_m_mr;
 
       // Computing the velocity in the wheel frame:
