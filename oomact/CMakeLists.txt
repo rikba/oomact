@@ -91,6 +91,7 @@ catkin_add_gtest(${PROJECT_NAME}_test
   test/acceptance/ImuCalibrationTest.cpp
   test/acceptance/SimpleCalibratorTest.cpp
   test/acceptance/SimpleModelTest.cpp
+  test/acceptance/WheelOdometryCalibrationTest.cpp
   test/data/MeasurementsContainerTest.cpp
   test/data/StorageTest.cpp
   test/error-terms/ConditionalErrorTermTest.cpp

@@ -1,0 +1,85 @@
+model {
+	Gravity {
+		used true
+		magnitude 9.81
+	}
+	frames "body,world"
+
+	pose {
+		frame body
+		targetFrame world
+		invertInput false
+
+		topic "/firefly/vi_sensor/ground_truth/transform"
+
+		covPosition { sigma 0.01 }
+		covOrientation { sigma 0.01 }
+
+		absoluteMeasurements true
+
+		rotation { used false }
+		translation { used false }
+		delay { used false }
+	}
+
+	wheelOdometry {
+		used true
+
+		frame body
+		groundFrame world
+		
+		wheelBase 0.2
+		wheelRadiusLeft 0.13
+		wheelRadiusRight 0.13
+		
+		assumedWheelBase 0.2
+		assumedWheelRadiusLeft 0.13
+		assumedWheelRadiusRight 0.13
+		
+		noise {
+			lwVariance 0.01
+			rwVariance 0.01
+		}
+
+		rotation {
+			yaw 0
+			pitch 0
+			roll 0
+		}
+		translation {
+			x 0
+			y 0
+			z 0
+		}
+		delay 0 {
+			used true
+			relativeBounds true
+			upperBound 0.01
+			lowerBound -0.15
+		}
+	}
+
+	traj {
+		frame body
+		referenceFrame world
+		initWithPoseMeasurements true
+		McSensor pose
+		splines {
+			knotsPerSecond 20
+			rotSplineOrder 3
+			rotFittingLambda 0.0000000001
+			transSplineOrder 4
+			transFittingLambda 0.0000000001
+		}
+	}
+}
+
+calibrator {
+	verbose true
+	timeBaseSensor pose
+	estimator {
+		optimizer {
+			maxIterations 150
+		}
+	}
+}
