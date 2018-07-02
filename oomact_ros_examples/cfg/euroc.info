@@ -1,11 +1,11 @@
-sensors {  
+sensors {
   vicon {
     type pose
 
     frame body
     targetFrame world
     invertInput false
-    
+
     topic "vicon/firefly_sbx/firefly_sbx"
 
     covPosition { sigma "0.01" }
@@ -45,7 +45,7 @@ sensors {
         accXVariance 0.01
         accYVariance 0.01
         accZVariance 0.01
-        accRandomWalk 4e-3
+        biasRandomWalk 4e-3
       }
     }
     gyro {
@@ -60,7 +60,7 @@ sensors {
         gyroXVariance 0.01
         gyroYVariance 0.01
         gyroZVariance 0.01
-        gyroRandomWalk 4e-3
+        biasRandomWalk 4e-3
       }
     }
 
@@ -110,7 +110,7 @@ sensors {
         accXVariance 0.01
         accYVariance 0.01
         accZVariance 0.01
-        accRandomWalk 4e-3
+        biasRandomWalk 4e-3
       }
     }
     gyro {
@@ -125,7 +125,7 @@ sensors {
         gyroXVariance 0.01
         gyroYVariance 0.01
         gyroZVariance 0.01
-        gyroRandomWalk 4e-3
+        biasRandomWalk 4e-3
       }
     }
 
@@ -156,9 +156,9 @@ sensors {
 }
 
 model {
-  Gravity { 
+  Gravity {
     used true
-    magnitude 9.81 
+    magnitude 9.81
   }
   frames "body,world"
 
