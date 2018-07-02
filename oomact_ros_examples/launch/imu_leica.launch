@@ -1,0 +1,10 @@
+<launch>
+  <arg name="bag_file" default="/home/rikba/bags/2018_06_30_imu_leica_calibration/experiment_01/merged/experiment_00/merged_sensors_2018-06-30-19-09-09_leica_2018-06-30-19-09-06.bag"/>
+
+   <node name="CalibrationNodeLeicaImu" pkg="oomact_ros" type="CalibrationNode" output="screen">
+    <param name="config_file" value="$(find oomact_ros_examples)/cfg/imu_leica.info" />
+    <param name="bag_file" value="$(arg bag_file)" />
+    <param name="output_file" value="/tmp/imu_leica.info" />
+  </node>
+
+</launch>

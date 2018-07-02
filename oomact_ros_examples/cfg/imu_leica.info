@@ -1,0 +1,120 @@
+sensors {
+  leica {
+    type position
+
+    used true
+
+    frame body
+    targetFrame world
+    invertInput false
+
+    topic "/milan/leica/position"
+
+    covPosition { sigma "0.01" }
+
+    absoluteMeasurements true
+
+    rotation { used false }
+    translation { used false }
+    delay { used false }
+
+    mestimator
+    {
+      name "Cauchy"
+      cauchySigma2 "10"
+    }
+  }
+  adis16448 {
+    type imu
+
+    used true
+
+    frame body
+    inertiaFrame world
+
+    topic "/milan/imu/data_raw"
+
+    acc {
+      used true
+      hasBias true
+      biasVector {
+        x 0
+        y 0
+        z 0
+      }
+      noise {
+        accXVariance 0.02
+        accYVariance 0.02
+        accZVariance 0.02
+        biasRandomWalk 8e-5
+      }
+    }
+    gyro {
+      used true
+      hasBias true
+      biasVector {
+        x 0
+        y 0
+        z 0
+      }
+      noise {
+        gyroXVariance 0.004
+        gyroYVariance 0.004
+        gyroZVariance 0.004
+        biasRandomWalk 3e-6
+      }
+    }
+
+    rotation {
+      roll 0.0
+      pitch 0.0
+      yaw 0.0
+    }
+    translation {
+      x 0
+      y 0
+      z 0
+    }
+    delay { used false }
+
+    mestimator
+    {
+      name "Cauchy"
+      cauchySigma2 "10"
+    }
+  }
+}
+
+model {
+  Gravity {
+    used true
+    magnitude 9.81
+  }
+  frames "body,world"
+
+  traj {
+    frame body
+    referenceFrame world
+    initWithPoseMeasurements true
+    McSensor leica
+    splines {
+      knotsPerSecond 40
+      rotSplineOrder 4
+      rotFittingLambda 0.0000001
+      transSplineOrder 4
+      transFittingLambda 0.0000001
+    }
+  }
+}
+
+calibrator {
+  verbose true
+  timeBaseSensor leica
+  estimator {
+    optimizer {
+      maxIterations 150
+      convergenceDeltaError 1e-6
+      convergenceDeltaX 1e-6
+    }
+  }
+}
