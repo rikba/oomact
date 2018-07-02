@@ -43,6 +43,7 @@ cs_add_library(${PROJECT_NAME}
   src/model/CalibrationVariable.cpp
   src/model/fragments/DelayCv.cpp
   src/model/fragments/PoseCv.cpp
+  src/model/fragments/R3Trajectory.cpp
   src/model/fragments/So3R3Trajectory.cpp
   src/model/fragments/TrajectoryCarrier.cpp
   src/model/FrameGraphModel.cpp
