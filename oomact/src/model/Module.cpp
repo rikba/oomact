@@ -172,7 +172,7 @@ void ModuleLinkBase::checkAndAnnounceResolvedLink(const Module * to, bool conver
   if(to && to->isUsed() && convertsToRequiredType){
     LOG(INFO) << *this << " successfully resolved to " << *to;
   } else {
-    const char * problem = to ? (to->isUsed()? " resolves to unused module!" : " resolves to used module but of wrong type!" ) : " could not be resolved!";
+    const char * problem = to ? (!to->isUsed()? " resolves to unused module!" : " resolves to used module but of wrong type!" ) : " could not be resolved!";
     if(required){
       LOG(ERROR) << *this << problem;
       throw std::runtime_error(toString() + problem);
