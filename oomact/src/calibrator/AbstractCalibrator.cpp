@@ -8,12 +8,12 @@
 #include <sm/MatrixArchive.hpp>
 #include <aslam/backend/OptimizerCallback.hpp>
 #include <aslam/backend/OptimizerCallbackManager.hpp>
-#include <aslam/calibration/CalibrationConfI.h>
+#include <aslam/calibration/calibrator/CalibrationConfI.h>
 
-#include <aslam/calibration/CalibrationProblem.hpp>
-#include <aslam/calibration/DesignVariableReceiver.hpp>
+#include <aslam/calibration/calibrator/CalibrationProblem.h>
+#include <aslam/calibration/DesignVariableReceiver.h>
 #include <aslam/calibration/model/Model.h>
-#include <aslam/calibration/model/StateCarrier.h>
+#include <aslam/calibration/calibrator/StateCarrier.h>
 #include <aslam/calibration/error-terms/ErrorTermGroup.h>
 #include <aslam/calibration/tools/ErrorTermStatistics.h>
 
@@ -33,7 +33,8 @@ AbstractCalibratorOptions::AbstractCalibratorOptions(const sm::value_store::Valu
     predictResults(config.getBool("predictResults", true)),
     verbose(config.getBool("verbose", false)),
     acceptConstantErrorTerms(config.getBool("acceptConstantErrorTerms", true)),
-    splineOutputSamplePeriod(config.getDouble("splineOutputSamplePeriod", 0.01))
+    splineOutputSamplePeriod(config.getDouble("splineOutputSamplePeriod", 0.01)),
+    numThreads(config.getInt("numThreads", 1))
 {
   if(acceptConstantErrorTerms){
     LOG(INFO)<< "Using acceptConstantErrorTerms = true";
@@ -46,9 +47,14 @@ AbstractCalibratorOptions::~AbstractCalibratorOptions(){
 AbstractCalibrator::AbstractCalibrator(ValueStoreRef config, std::shared_ptr<Model> model) :
   _timeBaseSensor("Calibrator", "timeBaseSensor", config.getString("timeBaseSensor"), true), //TODO C support LinkBase with config and owner name
   _modelSP(model),
-  _model(*model)
+  _model(*model),
+  _config(config)
 {
   _timeBaseSensor.resolve(_model);
+
+  // Sanity checks
+  CHECK(_timeBaseSensor.get().isUsed()) << "Time base sensor (" << _timeBaseSensor.get() << ") is not used!";
+  CHECK(!_timeBaseSensor.get().hasDelay()) << "Time base sensor (" << _timeBaseSensor.get() << ") with delay isn't supported!";
 }
 
 
@@ -179,14 +185,16 @@ void AbstractCalibrator::addMeasurementTimestamp(Timestamp t, const Sensor & sen
   }
 }
 
-
-
 void AbstractCalibrator::addFactors(const CalibrationConfI& estimationConfig, ErrorTermReceiver & problem, std::function<void()> statusCallback) {
   for(Module & m : getModel().getModules()){
     LOG(INFO) << "Adding module " << m.getName() << "'s error terms.";
     m.addErrorTerms(*this, getCurrentStorage(), estimationConfig, problem);
     statusCallback();
   }
+}
+
+ValueStoreRef AbstractCalibrator::getValueStore() const {
+  return _config;
 }
 
 void AbstractCalibrator::clearAfterEstimation() {
