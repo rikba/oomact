@@ -2,6 +2,7 @@
 
 #include <aslam/calibration/model/FrameGraphModel.h>
 #include <aslam/calibration/model/PoseTrajectory.h>
+#include <aslam/calibration/model/PositionTrajectory.h>
 #include <aslam/calibration/ros/RosInputProvider.h>
 #include <aslam/calibration/calibrator/CalibratorI.h>
 #include <aslam/calibration/model/sensors/PoseSensor.h>
@@ -78,8 +79,11 @@ int main(int argc, char** argv) {
   ROS_INFO("Setting up model and trajectory...");
 
   std::shared_ptr<cal::FrameGraphModel> model = std::make_shared<cal::FrameGraphModel>(vs_model);
-  cal::PoseTrajectory traj(*model, "traj", vs_model);
-  model->addModule(traj);
+  if (model->getFrame(getMyConfig().getString("pos_traj"))) {
+    cal::PositionTrajectory(*model, "pos_traj", vs_model);
+  } else {
+    cal::PoseTrajectory(*model, "traj", vs_model);
+  }
 
   ROS_INFO("Loading sensor parameters...");
 

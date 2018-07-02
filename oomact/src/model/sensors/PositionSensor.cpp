@@ -114,4 +114,3 @@ void PositionSensor::clearMeasurements() {
 
 } /* namespace calibration */
 } /* namespace aslam */
-

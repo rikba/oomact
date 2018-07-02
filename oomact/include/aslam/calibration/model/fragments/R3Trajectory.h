@@ -1,5 +1,5 @@
-#ifndef OOMACT_ASLAM_CALIBRATION_MODEL_R3TRAJECTORY_H_
-#define OOMACT_ASLAM_CALIBRATION_MODEL_R3TRAJECTORY_H_
+#ifndef OOMACT_ASLAM_CALIBRATION_MODEL_R3_TRAJECTORY_H_
+#define OOMACT_ASLAM_CALIBRATION_MODEL_R3_TRAJECTORY_H_
 
 #include <aslam/splines/OPTBSpline.hpp>
 #include <bsplines/EuclideanBSpline.hpp>
@@ -71,4 +71,4 @@ class R3Trajectory {
 } /* namespace calibration */
 } /* namespace aslam */
 
-#endif /* OOMACT_ASLAM_CALIBRATION_MODEL_R3TRAJECTORY_H_ */
+#endif /* OOMACT_ASLAM_CALIBRATION_MODEL_R3_TRAJECTORY_H_ */
