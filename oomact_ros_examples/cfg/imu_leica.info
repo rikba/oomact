@@ -69,7 +69,7 @@ sensors {
     targetFrame world
     invertInput false
 
-    topic "/milan/msf_core/transform"
+    topic "/milan/msf_core/odometry"
 
     covPosition { sigma "0.05" }
     covOrientation { sigma "0.05" }
@@ -95,8 +95,8 @@ sensors {
 
     used true
 
-    frame prism
     targetFrame world
+    frame imu
 
     topic "/milan/leica/position"
 
